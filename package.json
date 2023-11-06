@@ -2,7 +2,8 @@
   "name": "my-app",
   "version": "0.1.0",
   "scripts": {
-    "start": "concurrently \"cd server && npm start\" \"cd client && npm start\""
+    "start": "concurrently \"cd server && npm start\" \"cd client && npm start\"",
+    "install": "concurrently \"cd server && npm install\" \"cd client && npm install\""
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
