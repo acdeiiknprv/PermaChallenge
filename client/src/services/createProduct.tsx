@@ -1,4 +1,10 @@
-const createProduct = async (newProduct, authToken) => {
+import { Product } from "../interfaces/product";
+import { validateForm } from "../utils/validators";
+
+const createProduct = async (newProduct: Omit<Product, "id">, authToken: string) => {
+    if (!authToken) return console.error('Missing auth token');
+    if (!newProduct) return console.error('Missing new product');
+
     try {
         const response = await fetch(`http://localhost:3001/products`, {
             method: 'POST',
