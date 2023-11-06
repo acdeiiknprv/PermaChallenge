@@ -20,20 +20,20 @@ function FormatProduct() {
     const { products, handleRefresh, loading } = useProducts();
     const { showCreateModal, handleShowModal, handleCloseModal } = useCreateModal();
     const { showLoginModal, handleShowLoginModal, handleCloseLoginModal} = useLoginModal();
-    // const [searchTerm, setSearchTerm] = useState<string>("");
+    const [searchTerm, setSearchTerm] = useState<string>("");
 
     return (
         <div>
-            {/* <input
+            <input
                 type="text"
                 placeholder="Search by name..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-            /> */}
-                { authToken ? <AddButton icon={<AddIcon />} onClick={handleShowModal} /> : <AddButton icon={<LoginIcon />} onClick={handleShowLoginModal} /> }
+            />
+            { authToken ? <AddButton icon={<AddIcon />} onClick={handleShowModal} /> : <AddButton icon={<LoginIcon />} onClick={handleShowLoginModal} /> }
 
             {loading ? <CircularProgress /> :
-                <ProductsList products={products} onAction={handleRefresh} />
+                <ProductsList products={products} onAction={handleRefresh} search={searchTerm} />
             }
             {showCreateModal ? <IssueCreateModal open={showCreateModal} onClose={handleCloseModal} refreshOnAction={handleRefresh} /> : null}
             { showLoginModal ? <LoginModal open={showLoginModal} onClose={handleCloseLoginModal} /> : null}
@@ -41,10 +41,14 @@ function FormatProduct() {
     );
 }
 
-function ProductsList({ products, onAction }: { products: Product[], onAction: () => void }) {
+function ProductsList({ products, onAction, search }: { products: Product[], onAction: () => void, search: string }) {
     if (!Array.isArray(products)) {
         console.error('Products is not an array', products);
         return <div>Error: Products data is invalid.</div>;
+    }
+
+    if (search.length > 0) {
+        products = products.filter(product => product.title.toLowerCase().includes(search.toLowerCase()));
     }
 
     if (products.length === 0) {
