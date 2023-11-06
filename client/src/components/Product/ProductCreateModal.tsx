@@ -13,7 +13,8 @@ const ProductCreateModal = ({ open, onClose, refreshOnAction }: { open: boolean,
     const onSave = async (newProduct: Omit<Product, 'id'>) => {
         setIsLoading(true);
         try {
-            await createProduct(newProduct, authToken);
+            if (authToken)
+                await createProduct(newProduct, authToken);
             refreshOnAction();
         } catch (error) {
             console.error("Error while creating issue:", error);
