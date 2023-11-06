@@ -74,7 +74,7 @@ app.post('/products', checkAuthenticated, async (req, res) => {
   const { token } = req.user;
 
   try {
-    const response = await fetch('https://dummyjson.com/products/add', {
+    const response = await fetch('https://dummyjson.com/auth/products/add', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -96,14 +96,13 @@ app.put('/products/:id', checkAuthenticated, async (req, res) => {
   const { token } = req.user;
 
   try {
-    const response = await fetch(`https://dummyjson.com/products/${id}`, {
+    const response = await fetch('https://dummyjson.com/auth/products/' + id, {
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
+      headers: { 'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
       body: JSON.stringify(req.body),
-    });
+    })
 
     const result = await response.json();
     res.json(result);
