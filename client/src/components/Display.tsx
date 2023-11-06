@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import ProductsActions from './Product/ProductActions';
 import IssueCreateModal from './Product/ProductCreateModal';
 
-import { useProducts, useCreateModal, useLoginModal } from '../hooks/hooks';
+import { useProducts } from '../hooks/product';
+import { useCreateModal, useLoginModal } from '../hooks/modal';
 import { Product } from '../interfaces/product';
 
 import AddIcon from '@mui/icons-material/Add';
