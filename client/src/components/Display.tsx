@@ -8,32 +8,56 @@ import { Product } from '../interfaces/product';
 
 import AddIcon from '@mui/icons-material/Add';
 import LoginIcon from '@mui/icons-material/Login';
+import SearchIcon from '@mui/icons-material/Search';
+import SearchOffIcon from '@mui/icons-material/SearchOff';
+
 import Button from '@mui/material/Button';
 import { Box, Typography } from '@mui/material';
 import { CircularProgress } from '@mui/material';
 import { useAuth }  from '../AuthContext';
 import { LoginModal } from './Login/LoginModal';
+import SearchModal from './Product/ProductSearchModal';
 
 function FormatProduct() {
     const { authToken } = useAuth();
-
-    const { products, handleRefresh, loading } = useProducts();
     const { showCreateModal, handleShowModal, handleCloseModal } = useCreateModal();
     const { showLoginModal, handleShowLoginModal, handleCloseLoginModal} = useLoginModal();
-    const [searchTerm, setSearchTerm] = useState<string>("");
+    const [showSearchModal, setShowSearchModal] = useState(false);
+    const [filter, setFilterTerm] = useState<string>("");
+    const [search, setSearchTerm] = useState<string>("");
+    const [searchMode, setSearchMode] = useState<boolean>(false);
+    const { products, handleRefresh, loading } = useProducts(search);
+
+    const handleSearch = (tempSearchTerm: string) => {
+        setSearchTerm(tempSearchTerm);
+        setSearchMode(true);
+    }
+
+    const handleSearchOff = () => {
+        setSearchTerm("");
+        setSearchMode(false);
+    }
 
     return (
         <div>
             <input
                 type="text"
-                placeholder="Search by name..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Filter by name..."
+                value={filter}
+                onChange={(e) => setFilterTerm(e.target.value)}
             />
-            { authToken ? <AddButton icon={<AddIcon />} onClick={handleShowModal} /> : <AddButton icon={<LoginIcon />} onClick={handleShowLoginModal} /> }
-
+            { authToken ? <AddButton icon={<AddIcon />} onClick={handleShowModal} bottom={'20px'} /> : <AddButton icon={<LoginIcon />} onClick={handleShowLoginModal} bottom={'20px'} /> }
+            { searchMode ? <AddButton icon={<SearchOffIcon />} onClick={handleSearchOff} bottom={'100px'} /> : <AddButton icon={<SearchIcon />} onClick={() => setShowSearchModal(true)} bottom={'100px'}/> }
+            {showSearchModal && (
+                <SearchModal
+                    open={showSearchModal}
+                    onClose={() => setShowSearchModal(false)}
+                    onSearch={handleSearch}
+                />
+            )}
+            
             {loading ? <CircularProgress /> :
-                <ProductsList products={products} onAction={handleRefresh} search={searchTerm} />
+                <ProductsList products={products} onAction={handleRefresh} search={filter} />
             }
             {showCreateModal ? <IssueCreateModal open={showCreateModal} onClose={handleCloseModal} refreshOnAction={handleRefresh} /> : null}
             { showLoginModal ? <LoginModal open={showLoginModal} onClose={handleCloseLoginModal} /> : null}
@@ -63,9 +87,9 @@ function ProductsList({ products, onAction, search }: { products: Product[], onA
     );
 }
 
-function AddButton({ icon, onClick }: { icon: React.ReactNode, onClick: () => void }) {
+function AddButton({ icon, onClick, bottom }: { icon: React.ReactNode, onClick: () => void , bottom: string}) {
     return (
-        <div style={{ position: 'fixed', bottom: '20px', right: '20px' }}>
+        <div style={{ position: 'fixed', bottom: bottom, right: '20px' }}>
             <Button variant="contained" color="primary"
                 style={{
                     width: '56px',
