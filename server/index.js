@@ -20,33 +20,49 @@ const checkAuthenticated = (req, res, next) => {
 };
 
 app.get('/products', async (req, res) => {
-    try {
-        const response = await fetch(`https://dummyjson.com/products`);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        res.json(data);
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error');
+  try {
+    const response = await fetch(`https://dummyjson.com/products`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
 });
 
-app.get('/products/:id', async (req, res) => {
-    const { id } = req.params;
+// app.get('/products/:id', async (req, res) => {
+//   const { id } = req.params;
 
-    try {
-        const response = await fetch(`https://dummyjson.com/products/${id}`);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        res.json(data);
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error');
+//   try {
+//     const response = await fetch(`https://dummyjson.com/products/${id}`);
+//     if (!response.ok) {
+//       throw new Error(`HTTP error! status: ${response.status}`);
+//     }
+//     const data = await response.json();
+//     res.json(data);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send('Internal Server Error');
+//   }
+// });
+
+app.get('/products/search', async (req, res) => {
+  const searchTerm = req.query.q;
+
+  try {
+    const response = await fetch(`https://dummyjson.com/products/search?q=${searchTerm}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
 });
 
 app.post('/login', async (req, res) => {
@@ -98,7 +114,8 @@ app.put('/products/:id', checkAuthenticated, async (req, res) => {
   try {
     const response = await fetch('https://dummyjson.com/auth/products/' + id, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json',
+      headers: {
+        'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
       body: JSON.stringify(req.body),
