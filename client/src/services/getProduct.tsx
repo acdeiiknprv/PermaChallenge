@@ -24,3 +24,18 @@ export async function getProductById(productID: string) {
         console.error('Error:', error);
     }
 }
+
+export async function getProductsBySearch(searchTerm: string) {
+    if (!searchTerm) {
+        throw new Error('Search term is required');
+    }
+    try {
+        const response = await fetch(`http://localhost:3001/products/search?q=${searchTerm}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
