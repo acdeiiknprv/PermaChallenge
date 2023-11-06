@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Product } from "../../interfaces/product";
 import { Button, TextField } from "@mui/material";
+import { validateField, validateForm } from "../../utils/validators";
 import React from "react";
 
 interface IssueFormProps {
@@ -12,18 +13,36 @@ interface IssueFormProps {
     isLoading?: boolean;
 }
 
+const initialProductState = {
+    title: "",
+    description: "",
+    price: "",
+    discountPercentage: "",
+    rating: "",
+    stock: "",
+    brand: "",
+    category: "",
+    thumbnail: "",
+    images: ""
+};
+
 const IssueForm = React.forwardRef<HTMLDivElement, IssueFormProps>(
     ({ product, onSubmit, onClose, title: formTitle, submitButtonText, isLoading }, ref) => {
-        const [title, setTitle] = useState(product ? product.title : "");
-        const [description, setDescription] = useState(product ? product.description : "");
-        const [price, setPrice] = useState(product ? product.price.toString() : "");
-        const [discountPercentage, setDiscountPercentage] = useState(product ? product.discountPercentage.toString() : "");
-        const [rating, setRating] = useState(product ? product.rating.toString() : "");
-        const [stock, setStock] = useState(product ? product.stock.toString() : "");
-        const [brand, setBrand] = useState(product ? product.brand : "");
-        const [category, setCategory] = useState(product ? product.category : "");
-        const [thumbnail, setThumbnail] = useState(product ? product.thumbnail : "");
-        const [images, setImages] = useState(product ? product.images.join(', ') : "");
+        const [formData, setFormData] = useState({
+            ...initialProductState,
+            ...product && {
+                title: product.title,
+                description: product.description,
+                price: product.price.toString(),
+                discountPercentage: product.discountPercentage.toString(),
+                rating: product.rating.toString(),
+                stock: product.stock.toString(),
+                brand: product.brand,
+                category: product.category,
+                thumbnail: product.thumbnail,
+                images: product.images.join(', ')
+            }
+        });
 
         const [errors, setErrors] = useState<{
             title?: string;
@@ -35,54 +54,38 @@ const IssueForm = React.forwardRef<HTMLDivElement, IssueFormProps>(
             brand?: string;
             category?: string;
         }>({});
-        
 
-        const validateTitle = (value: string) => value.length >= 3;
-        const validateDescription = (value: string) => value.length >= 5;
-        const validatePrice = (value: string) => parseFloat(value) >= 0;
-        const validateDiscountPercentage = (value: string) => {
-            const val = parseFloat(value);
-            return val >= 0 && val <= 100;
-        };
-        const validateRating = (value: string) => {
-            const val = parseFloat(value);
-            return val >= 0 && val <= 5;
-        };
-        const validateStock = (value: string) => parseInt(value, 10) >= 0;
-        const validateBrand = (value: string) => value.length >= 1;
-        const validateCategory = (value: string) => value.length >= 2;
+        const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+            const { name, value } = event.target;
 
-        const isFormValid = () => {
-            return (
-                validateTitle(title) &&
-                validateDescription(description) &&
-                validatePrice(price) &&
-                validateDiscountPercentage(discountPercentage) &&
-                validateRating(rating) &&
-                validateStock(stock) &&
-                validateBrand(brand) &&
-                validateCategory(category)
-            );
+            const errorMessage = validateField(name, value);
+
+            setFormData(prevFormData => {
+                return { ...prevFormData, [name]: value };
+            });
+
+            setErrors(prevErrors => {
+                return { ...prevErrors, [name]: errorMessage };
+            });
         };
 
         const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
             event.preventDefault();
-            if (!isFormValid()) {
+
+            const formToSubmit = {
+                ...formData, price: parseFloat(formData.price),
+                discountPercentage: parseFloat(formData.discountPercentage),
+                rating: parseFloat(formData.rating),
+                stock: parseInt(formData.stock),
+                images: formData.images.split(',').map((img) => img.trim())
+            };
+
+            if (!validateForm(formToSubmit)) {
                 return;
             }
 
-            const submittedProduct: Omit<Product, 'id'> = {
-                title,
-                description,
-                price: parseFloat(price),
-                discountPercentage: parseFloat(discountPercentage),
-                rating: parseFloat(rating),
-                stock: parseInt(stock, 10),
-                brand,
-                category,
-                thumbnail,
-                images: images.split(',').map((img) => img.trim()),
-            };
+            const submittedProduct: Omit<Product, 'id'> = formToSubmit;
+
             await onSubmit(submittedProduct);
             onClose();
         };
@@ -97,162 +100,114 @@ const IssueForm = React.forwardRef<HTMLDivElement, IssueFormProps>(
                 <form onSubmit={handleSubmit}>
                     <TextField
                         required
+                        name="title"
                         label="Title"
                         variant="outlined"
                         fullWidth
                         margin="normal"
-                        value={title}
-                        onChange={(event) => {
-                            const newValue = event.target.value;
-                            setTitle(newValue);
-                            setErrors({
-                                ...errors,
-                                title: newValue.length >= 3 ? '' : 'Title must be at least 3 characters',
-                            });
-                        }}
+                        value={formData.title}
+                        onChange={handleChange}
                         error={!!errors.title}
                         helperText={errors.title}
                     />
 
                     <TextField
                         required
+                        name="description"
                         label="Description"
                         variant="outlined"
                         fullWidth
                         margin="normal"
                         multiline
                         rows={3}
-                        value={description}
-                        onChange={(event) => {
-                            const newValue = event.target.value;
-                            setDescription(newValue);
-                            setErrors({
-                                ...errors,
-                                description: newValue.length >= 5 ? '' : 'Description must be at least 5 characters',
-                            });
-                        }}
+                        value={formData.description}
+                        onChange={handleChange}
                         error={!!errors.description}
                         helperText={errors.description}
                     />
 
                     <TextField
                         required
+                        name="price"
                         label="Price"
                         variant="outlined"
                         fullWidth
                         margin="normal"
-                        value={price}
-                        onChange={(event) => {
-                            const newValue = event.target.value;
-                            setPrice(newValue);
-                            const numericValue = parseFloat(newValue);
-                            setErrors({
-                                ...errors,
-                                price: !isNaN(numericValue) && numericValue >= 0 ? '' : 'Price cannot be less than 0',
-                            });
-                        }}
+                        value={formData.price}
+                        onChange={handleChange}
                         error={!!errors.price}
                         helperText={errors.price}
                         type="number"
+                        InputProps={{ inputProps: { min: 0, step: "any" } }}
                     />
 
                     <TextField
                         required
+                        name="discountPercentage"
                         label="Discount Percentage"
                         variant="outlined"
                         fullWidth
                         margin="normal"
-                        value={discountPercentage}
-                        onChange={(event) => {
-                            const newValue = event.target.value;
-                            setDiscountPercentage(newValue);
-                            const numericValue = parseFloat(newValue);
-                            setErrors({
-                                ...errors,
-                                discountPercentage: !isNaN(numericValue) && numericValue >= 0 && numericValue <= 100 ? '' : 'Discount percentage must be between 0 and 100',
-                            });
-                        }}
+                        value={formData.discountPercentage}
+                        onChange={handleChange}
                         error={!!errors.discountPercentage}
                         helperText={errors.discountPercentage}
                         type="number"
+                        InputProps={{ inputProps: { min: 0.00, max: 100.00, step: "any" } }}
                     />
 
                     <TextField
                         required
+                        name="rating"
                         label="Rating"
                         variant="outlined"
                         fullWidth
                         margin="normal"
-                        value={rating}
-                        onChange={(event) => {
-                            const newValue = event.target.value;
-                            setRating(newValue);
-                            const numericValue = parseFloat(newValue);
-                            setErrors({
-                                ...errors,
-                                rating: !isNaN(numericValue) && numericValue >= 0 && numericValue <= 5 ? '' : 'Rating must be between 0 and 5',
-                            });
-                        }}
+                        value={formData.rating}
+                        onChange={handleChange}
                         error={!!errors.rating}
                         helperText={errors.rating}
                         type="number"
+                        InputProps={{ inputProps: { min: 0, max: 5, step: "any" } }}
                     />
 
                     <TextField
                         required
+                        name="stock"
                         label="Stock"
                         variant="outlined"
                         fullWidth
                         margin="normal"
-                        value={stock}
-                        onChange={(event) => {
-                            const newValue = event.target.value;
-                            setStock(newValue);
-                            const numericValue = parseInt(newValue, 10);
-                            setErrors({
-                                ...errors,
-                                stock: !isNaN(numericValue) && numericValue >= 0 ? '' : 'Stock cannot be less than 0',
-                            });
-                        }}
+                        value={formData.stock}
+                        onChange={handleChange}
                         error={!!errors.stock}
                         helperText={errors.stock}
                         type="number"
+                        InputProps={{ inputProps: { min: 0 } }}
                     />
 
                     <TextField
                         required
+                        name="brand"
                         label="Brand"
                         variant="outlined"
                         fullWidth
                         margin="normal"
-                        value={brand}
-                        onChange={(event) => {
-                            const newValue = event.target.value;
-                            setBrand(newValue);
-                            setErrors({
-                                ...errors,
-                                brand: newValue.length >= 1 ? '' : 'Brand should be at least 1 character',
-                            });
-                        }}
+                        value={formData.brand}
+                        onChange={handleChange}
                         error={!!errors.brand}
                         helperText={errors.brand}
                     />
 
                     <TextField
                         required
+                        name="category"
                         label="Category"
                         variant="outlined"
                         fullWidth
                         margin="normal"
-                        value={category}
-                        onChange={(event) => {
-                            const newValue = event.target.value;
-                            setCategory(newValue);
-                            setErrors({
-                                ...errors,
-                                category: newValue.length >= 2 ? '' : 'Category should be at least 2 characters',
-                            });
-                        }}
+                        value={formData.category}
+                        onChange={handleChange}
                         error={!!errors.category}
                         helperText={errors.category}
                     />
@@ -262,7 +217,7 @@ const IssueForm = React.forwardRef<HTMLDivElement, IssueFormProps>(
                             type="submit"
                             variant="contained"
                             color="primary"
-                            disabled={isLoading}  // Disable the button if loading
+                            disabled={isLoading}
                         >
                             {isLoading ? 'Saving...' : submitButtonText}
                         </Button>
