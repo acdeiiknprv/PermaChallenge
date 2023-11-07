@@ -8,8 +8,8 @@ interface AuthContextType {
 }
 
 const defaultAuthContext: AuthContextType = {
-  login: (token: string) => {},
-  logout: () => {},
+  login: (token: string) => { },
+  logout: () => { },
   isAuthenticated: false,
   makeAuthenticatedRequest: async (input: RequestInfo, init?: RequestInit) => new Response(),
 };
@@ -32,7 +32,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     const tokenTimestamp = parseInt(localStorage.getItem('tokenTimestamp') || '0', 10);
-    
+
     if (token && !isTokenExpired(tokenTimestamp)) {
       setAuthToken(token);
     } else {

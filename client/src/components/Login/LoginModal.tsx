@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Modal, Box, TextField, Button, Typography } from '@mui/material';
 import appLogin from '../../services/login';
-import { useAuth }  from '../../AuthContext';
+import { useAuth } from '../../AuthContext';
 
 interface LoginModalProps {
   open: boolean;
@@ -9,21 +9,21 @@ interface LoginModalProps {
 }
 
 export const LoginModal: React.FC<LoginModalProps> = ({ open, onClose }) => {
-    const { login } = useAuth();
+  const { login } = useAuth();
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin =  async () => {
+  const handleLogin = async () => {
 
     try {
-        if (!username || !password) throw new Error("Username and password are required");
-        const response = await appLogin({username, password});
-        if (response) {
-            login(response.token);
-        }
+      if (!username || !password) throw new Error("Username and password are required");
+      const response = await appLogin({ username, password });
+      if (response) {
+        login(response.token);
+      }
     } catch (error) {
-        console.error("Error while logging in:", error);
+      console.error("Error while logging in:", error);
     }
 
     onClose();

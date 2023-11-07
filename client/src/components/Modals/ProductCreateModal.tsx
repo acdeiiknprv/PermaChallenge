@@ -3,7 +3,7 @@ import IssueForm from "../Product/ProductForm";
 import createProduct from "../../services/createProduct";
 import { Product } from "../../interfaces/product";
 import { useState } from "react";
-import { useAuth }  from '../../AuthContext';
+import { useAuth } from '../../AuthContext';
 
 const ProductCreateModal = ({ open, onClose, refreshOnAction }: { open: boolean, onClose: () => void, refreshOnAction: () => void }) => {
     const { isAuthenticated, makeAuthenticatedRequest } = useAuth();

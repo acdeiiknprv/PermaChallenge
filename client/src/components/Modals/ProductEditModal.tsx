@@ -1,7 +1,7 @@
 import { Button, Modal } from "@mui/material";
 import { Product } from "../../interfaces/product";
 import editProduct from "../../services/editProduct";
-import { useAuth }  from '../../AuthContext';
+import { useAuth } from '../../AuthContext';
 import { useState } from "react";
 import IssueForm from "../Product/ProductForm";
 

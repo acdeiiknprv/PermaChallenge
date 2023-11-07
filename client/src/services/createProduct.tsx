@@ -1,5 +1,4 @@
 import { Product } from "../interfaces/product";
-import { useAuth } from "../AuthContext";
 
 const createProduct = async (newProduct: Omit<Product, "id">, makeAuthenticatedRequest: (input: RequestInfo, init?: RequestInit) => Promise<Response>) => {
 

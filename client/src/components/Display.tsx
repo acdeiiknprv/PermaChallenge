@@ -34,9 +34,9 @@ function Products() {
     const { showLoginModal, handleShowLoginModal, handleCloseLoginModal } = useLoginModal();
     const { showLogoutModal, handleShowLogoutModal, handleCloseLogoutModal } = useLogoutModal();
     const { showSearchModal, handleShowSearchModal, handleCloseSearchModal } = useSearchModal();
-    
+
     const { products, handleRefresh, loading } = useProducts(search);
-    
+
 
     const handleSearch = (tempSearchTerm: string) => {
         setSearchTerm(tempSearchTerm);
@@ -56,7 +56,7 @@ function Products() {
                 value={filter}
                 onChange={(e) => setFilterTerm(e.target.value)}
             />
-            
+
 
             {loading ? <CircularProgress /> :
                 <ProductsList products={products} onAction={handleRefresh} search={filter} />
@@ -71,12 +71,12 @@ function Products() {
                 ) : <FixedButton icon={<LoginIcon />} onClick={handleShowLoginModal} bottom={'20px'} right={'20px'} />}
                 {searchMode ? <FixedButton icon={<SearchOffIcon />} onClick={handleSearchOff} bottom={'100px'} right={'20px'} /> : <FixedButton icon={<SearchIcon />} onClick={handleShowSearchModal} bottom={'100px'} right={'20px'} />}
             </>
-            
+
             <> {/* Modals */}
                 {showCreateModal ? <IssueCreateModal open={showCreateModal} onClose={handleCloseModal} refreshOnAction={handleRefresh} /> : null}
                 {showLoginModal ? <LoginModal open={showLoginModal} onClose={handleCloseLoginModal} /> : null}
                 {showLogoutModal ? <LogoutModal open={showLogoutModal} onClose={handleCloseLogoutModal} /> : null}
-                {showSearchModal ?<SearchModal open={showSearchModal} onClose={handleCloseSearchModal} onSearch={handleSearch} /> : null}
+                {showSearchModal ? <SearchModal open={showSearchModal} onClose={handleCloseSearchModal} onSearch={handleSearch} /> : null}
             </>
         </div>
     );

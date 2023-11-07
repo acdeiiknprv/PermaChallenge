@@ -58,25 +58,25 @@ const IssueForm = React.forwardRef<HTMLDivElement, IssueFormProps>(
 
         const debouceValidateField = useCallback(
             debounce((name: string, value: string) => {
-              const error =  validateField(name, value);
-              setErrors(prevErrors => ({
-                ...prevErrors,
-                [name]: error
-              }));
+                const error = validateField(name, value);
+                setErrors(prevErrors => ({
+                    ...prevErrors,
+                    [name]: error,
+                }));
             }, 300),
-            []
-          );
-        
-          const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+            [setErrors, validateField]
+        );
+
+        const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
             const { name, value } = event.target;
-        
+
             setFormData(prevFormData => ({
-              ...prevFormData,
-              [name]: value,
+                ...prevFormData,
+                [name]: value,
             }));
-        
+
             debouceValidateField(name, value);
-          };
+        };
 
         const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
             event.preventDefault();

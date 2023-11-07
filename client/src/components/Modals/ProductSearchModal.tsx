@@ -12,7 +12,7 @@ const style = {
   p: 4,
 };
 
-const SearchModal = ({ open, onClose, onSearch }: {open: boolean, onClose: () => void, onSearch: (tempSearchTerm: string) => void}) => {
+const SearchModal = ({ open, onClose, onSearch }: { open: boolean, onClose: () => void, onSearch: (tempSearchTerm: string) => void }) => {
   const [tempSearchTerm, setTempSearchTerm] = useState('');
 
   const handleSearchClick = () => {

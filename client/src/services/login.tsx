@@ -1,6 +1,6 @@
-const appLogin = async (credentials: {username: string, password: string}) => {
+const appLogin = async (credentials: { username: string, password: string }) => {
     if (!credentials.username || !credentials.password) return console.error('Missing credentials');
-    
+
     try {
         const response = await fetch(`https://dummyjson.com/auth/login`, {
             method: 'POST',

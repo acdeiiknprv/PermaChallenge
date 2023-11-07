@@ -1,10 +1,9 @@
 import { Product } from "../interfaces/product";
-import { useAuth } from "../AuthContext";
 
 const editIssue = async (productID: number, updatedProduct: Omit<Product, 'id'>, makeAuthenticatedRequest: (input: RequestInfo, init?: RequestInit) => Promise<Response>) => {
     if (!productID) return console.error('Missing product ID');
     if (!updatedProduct) return console.error('Missing updated product');
-    
+
     try {
         const id = productID.toString();
         const response = await makeAuthenticatedRequest(`http://localhost:3001/products/` + id, {
