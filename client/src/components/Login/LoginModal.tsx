@@ -17,6 +17,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ open, onClose }) => {
   const handleLogin =  async () => {
 
     try {
+        if (!username || !password) throw new Error("Username and password are required");
         const response = await appLogin({username, password});
         if (response) {
             login(response.token);
@@ -50,6 +51,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ open, onClose }) => {
           Login
         </Typography>
         <TextField
+          required
           label="Username"
           variant="outlined"
           fullWidth
@@ -57,6 +59,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ open, onClose }) => {
           onChange={(e) => setUsername(e.target.value)}
         />
         <TextField
+          required
           label="Password"
           type="password"
           variant="outlined"
