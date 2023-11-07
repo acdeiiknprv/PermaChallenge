@@ -3,7 +3,7 @@ import { Product } from "../../interfaces/product";
 import editProduct from "../../services/editProduct";
 import { useAuth } from '../../AuthContext';
 import { useState } from "react";
-import IssueForm from "../Product/ProductForm";
+import ProductForm from "../Product/ProductForm";
 
 const ProductEditModal = ({ product, refreshOnAction }: { product: Product, refreshOnAction: () => void }) => {
     const { isAuthenticated, makeAuthenticatedRequest } = useAuth();
@@ -36,11 +36,11 @@ const ProductEditModal = ({ product, refreshOnAction }: { product: Product, refr
             </Button>
 
             <Modal open={show} onClose={handleClose}>
-                <IssueForm
+                <ProductForm
                     product={product}
                     onSubmit={onSave}
                     onClose={handleClose}
-                    title="Edit Issue"
+                    title="Edit Product"
                     submitButtonText="Save Changes"
                     isLoading={isLoading}
                 />

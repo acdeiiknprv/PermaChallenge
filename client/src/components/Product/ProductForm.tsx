@@ -5,7 +5,7 @@ import { validateField, validateForm } from "../../utils/validators";
 import { debounce } from 'lodash';
 import React from "react";
 
-interface IssueFormProps {
+interface ProductFormProps {
     product?: Product;
     onSubmit: (product: Omit<Product, 'id'>) => Promise<void>;
     onClose: () => void;
@@ -27,7 +27,7 @@ const initialProductState = {
     images: ""
 };
 
-const IssueForm = React.forwardRef<HTMLDivElement, IssueFormProps>(
+const ProductForm = React.forwardRef<HTMLDivElement, ProductFormProps>(
     ({ product, onSubmit, onClose, title: formTitle, submitButtonText, isLoading }, ref) => {
         const [formData, setFormData] = useState({
             ...initialProductState,
@@ -240,4 +240,4 @@ const IssueForm = React.forwardRef<HTMLDivElement, IssueFormProps>(
     }
 );
 
-export default IssueForm;
+export default ProductForm;

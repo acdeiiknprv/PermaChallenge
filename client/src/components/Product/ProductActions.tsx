@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import IssueEditModal from "../Modals/ProductEditModal";
+import ProductEditModal from "../Modals/ProductEditModal";
 import { Product } from "../../interfaces/product";
 import { useAuth } from '../../AuthContext';
 
@@ -8,7 +8,7 @@ const ProductsActions = ({ product, onAction }: { product: Product, onAction: ()
     if (product.id === undefined || !isAuthenticated) return (<></>);
     return (
         <div>
-            {<IssueEditModal product={product} refreshOnAction={onAction} />}
+            {<ProductEditModal product={product} refreshOnAction={onAction} />}
         </div>
     );
 };

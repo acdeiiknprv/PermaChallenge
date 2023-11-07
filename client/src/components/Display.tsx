@@ -8,7 +8,7 @@ import { LoginModal } from './Login/LoginModal';
 import { LogoutModal } from './Login/LogoutModal';
 import SearchModal from './Modals/ProductSearchModal';
 import ProductsActions from './Product/ProductActions';
-import IssueCreateModal from './Modals/ProductCreateModal';
+import ProductCreateModal from './Modals/ProductCreateModal';
 
 import { useProducts } from '../hooks/product';
 import { useCreateModal, useLoginModal, useLogoutModal, useSearchModal } from '../hooks/modal';
@@ -73,7 +73,7 @@ function Products() {
             </>
 
             <> {/* Modals */}
-                {showCreateModal ? <IssueCreateModal open={showCreateModal} onClose={handleCloseModal} refreshOnAction={handleRefresh} /> : null}
+                {showCreateModal ? <ProductCreateModal open={showCreateModal} onClose={handleCloseModal} refreshOnAction={handleRefresh} /> : null}
                 {showLoginModal ? <LoginModal open={showLoginModal} onClose={handleCloseLoginModal} /> : null}
                 {showLogoutModal ? <LogoutModal open={showLogoutModal} onClose={handleCloseLogoutModal} /> : null}
                 {showSearchModal ? <SearchModal open={showSearchModal} onClose={handleCloseSearchModal} onSearch={handleSearch} /> : null}

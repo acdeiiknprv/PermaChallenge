@@ -1,5 +1,5 @@
 import { Modal } from "@mui/material";
-import IssueForm from "../Product/ProductForm";
+import ProductForm from "../Product/ProductForm";
 import createProduct from "../../services/createProduct";
 import { Product } from "../../interfaces/product";
 import { useState } from "react";
@@ -17,7 +17,7 @@ const ProductCreateModal = ({ open, onClose, refreshOnAction }: { open: boolean,
                 await createProduct(newProduct, makeAuthenticatedRequest);
             refreshOnAction();
         } catch (error) {
-            console.error("Error while creating issue:", error);
+            console.error("Error while creating product:", error);
         }
         finally {
             setIsLoading(false);
@@ -26,11 +26,11 @@ const ProductCreateModal = ({ open, onClose, refreshOnAction }: { open: boolean,
 
     return (
         <Modal open={open} onClose={onClose}>
-            <IssueForm
+            <ProductForm
                 onSubmit={onSave}
                 onClose={onClose}
-                title="Create Issue"
-                submitButtonText="Create Issue"
+                title="Create Product"
+                submitButtonText="Create Product"
                 isLoading={isLoading}
             />
         </Modal>
