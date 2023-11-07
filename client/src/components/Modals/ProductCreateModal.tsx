@@ -10,11 +10,13 @@ const ProductCreateModal = ({ open, onClose, refreshOnAction }: { open: boolean,
 
     const [isLoading, setIsLoading] = useState(false);
 
-    const onSave = async (newProduct: Omit<Product, 'id'>) => {
+    const onSave = async (newProduct: Product) => {
+        const { id, ...productWithoutId } = newProduct;
+
         setIsLoading(true);
         try {
             if (isAuthenticated)
-                await createProduct(newProduct, makeAuthenticatedRequest);
+                await createProduct(productWithoutId, makeAuthenticatedRequest);
             refreshOnAction();
         } catch (error) {
             console.error("Error while creating product:", error);

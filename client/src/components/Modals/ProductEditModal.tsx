@@ -14,12 +14,28 @@ const ProductEditModal = ({ product, refreshOnAction }: { product: Product, refr
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    const onSave = async (updatedProduct: Omit<Product, 'id'>) => {
+    function getUpdatedFields(original: Product, updated: Product): Partial<Product> {
+        let changes = {};
+
+        (Object.keys(original) as Array<keyof Product>).forEach((key) => {
+            if (key !== "images") {
+                if (original[key] !== updated[key]) {
+                    changes = { ...changes, [key]: updated[key] };
+                }
+            }
+        })
+        return changes;
+    }
+
+    const onSave = async (updatedProduct: Product) => {
         if (product.id === undefined) return;
+
+        const updatedFields = getUpdatedFields(product, updatedProduct);
+        
         setIsLoading(true);
         try {
             if (isAuthenticated) {
-                await editProduct(product.id, updatedProduct, makeAuthenticatedRequest);
+                await editProduct(product.id, updatedFields, makeAuthenticatedRequest);
                 refreshOnAction();
             }
         } catch (error) {
