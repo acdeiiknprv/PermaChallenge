@@ -1,16 +1,15 @@
 import { Product } from "../interfaces/product";
-import { validateForm } from "../utils/validators";
+import { useAuth } from "../AuthContext";
 
-const createProduct = async (newProduct: Omit<Product, "id">, authToken: string) => {
-    if (!authToken) return console.error('Missing auth token');
+const createProduct = async (newProduct: Omit<Product, "id">, makeAuthenticatedRequest: (input: RequestInfo, init?: RequestInit) => Promise<Response>) => {
+
     if (!newProduct) return console.error('Missing new product');
 
     try {
-        const response = await fetch(`http://localhost:3001/products`, {
+        const response = await makeAuthenticatedRequest(`http://localhost:3001/products`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${authToken}`,
             },
             body: JSON.stringify(newProduct),
         });

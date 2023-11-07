@@ -6,15 +6,15 @@ import { useState } from "react";
 import { useAuth }  from '../../AuthContext';
 
 const ProductCreateModal = ({ open, onClose, refreshOnAction }: { open: boolean, onClose: () => void, refreshOnAction: () => void }) => {
-    const { authToken } = useAuth();
+    const { isAuthenticated, makeAuthenticatedRequest } = useAuth();
 
     const [isLoading, setIsLoading] = useState(false);
 
     const onSave = async (newProduct: Omit<Product, 'id'>) => {
         setIsLoading(true);
         try {
-            if (authToken)
-                await createProduct(newProduct, authToken);
+            if (isAuthenticated)
+                await createProduct(newProduct, makeAuthenticatedRequest);
             refreshOnAction();
         } catch (error) {
             console.error("Error while creating issue:", error);

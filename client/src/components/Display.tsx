@@ -22,7 +22,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
 
 function Products() {
-    const { authToken } = useAuth();
+    const { isAuthenticated } = useAuth();
 
     const [filter, setFilterTerm] = useState<string>("");
     const [search, setSearchTerm] = useState<string>("");
@@ -60,7 +60,7 @@ function Products() {
             }
 
             <> {/* Buttons */}
-                {authToken ? <FixedButton icon={<AddIcon />} onClick={handleShowModal} bottom={'20px'} right={'20px'} /> : <FixedButton icon={<LoginIcon />} onClick={handleShowLoginModal} bottom={'20px'} right={'20px'} />}
+                {isAuthenticated ? <FixedButton icon={<AddIcon />} onClick={handleShowModal} bottom={'20px'} right={'20px'} /> : <FixedButton icon={<LoginIcon />} onClick={handleShowLoginModal} bottom={'20px'} right={'20px'} />}
                 {searchMode ? <FixedButton icon={<SearchOffIcon />} onClick={handleSearchOff} bottom={'100px'} right={'20px'} /> : <FixedButton icon={<SearchIcon />} onClick={handleShowSearchModal} bottom={'100px'} right={'20px'} />}
                 {/* Logout Button */}
             </>

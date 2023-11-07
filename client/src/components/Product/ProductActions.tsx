@@ -4,8 +4,8 @@ import { Product } from "../../interfaces/product";
 import { useAuth }  from '../../AuthContext';
 
 const ProductsActions = ({ product, onAction }: {product: Product, onAction: () => void}) => {
-    const { authToken } = useAuth();
-    if (product.id === undefined || authToken == null) return (<></>);
+    const { isAuthenticated } = useAuth();
+    if (product.id === undefined || !isAuthenticated) return (<></>);
     return (
         <div>
             {<IssueEditModal product={product} refreshOnAction={onAction} />}
