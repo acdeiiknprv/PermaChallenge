@@ -5,12 +5,13 @@ import { Product } from '../interfaces/product';
 
 import NoProducts from '../utils/noproduct';
 import { LoginModal } from './Login/LoginModal';
+import { LogoutModal } from './Login/LogoutModal';
 import SearchModal from './Modals/ProductSearchModal';
 import ProductsActions from './Product/ProductActions';
 import IssueCreateModal from './Modals/ProductCreateModal';
 
 import { useProducts } from '../hooks/product';
-import { useCreateModal, useLoginModal, useSearchModal } from '../hooks/modal';
+import { useCreateModal, useLoginModal, useLogoutModal, useSearchModal } from '../hooks/modal';
 
 import { Box, Typography } from '@mui/material';
 import { CircularProgress } from '@mui/material';
@@ -18,6 +19,7 @@ import { FixedButton } from './Buttons/FixedButton';
 
 import AddIcon from '@mui/icons-material/Add';
 import LoginIcon from '@mui/icons-material/Login';
+import LogoutIcon from '@mui/icons-material/Logout';
 import SearchIcon from '@mui/icons-material/Search';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
 
@@ -30,6 +32,7 @@ function Products() {
 
     const { showCreateModal, handleShowModal, handleCloseModal } = useCreateModal();
     const { showLoginModal, handleShowLoginModal, handleCloseLoginModal } = useLoginModal();
+    const { showLogoutModal, handleShowLogoutModal, handleCloseLogoutModal } = useLogoutModal();
     const { showSearchModal, handleShowSearchModal, handleCloseSearchModal } = useSearchModal();
     
     const { products, handleRefresh, loading } = useProducts(search);
@@ -60,14 +63,19 @@ function Products() {
             }
 
             <> {/* Buttons */}
-                {isAuthenticated ? <FixedButton icon={<AddIcon />} onClick={handleShowModal} bottom={'20px'} right={'20px'} /> : <FixedButton icon={<LoginIcon />} onClick={handleShowLoginModal} bottom={'20px'} right={'20px'} />}
+                {isAuthenticated ? (
+                    <>
+                        <FixedButton icon={<AddIcon />} onClick={handleShowModal} bottom={'20px'} right={'100px'} />
+                        <FixedButton icon={<LogoutIcon />} onClick={handleShowLogoutModal} bottom={'20px'} right={'20px'} />
+                    </>
+                ) : <FixedButton icon={<LoginIcon />} onClick={handleShowLoginModal} bottom={'20px'} right={'20px'} />}
                 {searchMode ? <FixedButton icon={<SearchOffIcon />} onClick={handleSearchOff} bottom={'100px'} right={'20px'} /> : <FixedButton icon={<SearchIcon />} onClick={handleShowSearchModal} bottom={'100px'} right={'20px'} />}
-                {/* Logout Button */}
             </>
             
             <> {/* Modals */}
                 {showCreateModal ? <IssueCreateModal open={showCreateModal} onClose={handleCloseModal} refreshOnAction={handleRefresh} /> : null}
                 {showLoginModal ? <LoginModal open={showLoginModal} onClose={handleCloseLoginModal} /> : null}
+                {showLogoutModal ? <LogoutModal open={showLogoutModal} onClose={handleCloseLogoutModal} /> : null}
                 {showSearchModal ?<SearchModal open={showSearchModal} onClose={handleCloseSearchModal} onSearch={handleSearch} /> : null}
             </>
         </div>
