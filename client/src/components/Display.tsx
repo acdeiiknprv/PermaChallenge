@@ -50,12 +50,12 @@ function Products() {
 
     return (
         <div>
-            <input
+            {/* <input
                 type="text"
                 placeholder="Filter by name..."
                 value={filter}
                 onChange={(e) => setFilterTerm(e.target.value)}
-            />
+            /> */}
 
 
             {loading ? <CircularProgress /> :
@@ -88,9 +88,9 @@ function ProductsList({ products, onAction, search }: { products: Product[], onA
         return <div>Error: Products data is invalid.</div>;
     }
 
-    if (search.length > 0) {
-        products = products.filter(product => product.title.toLowerCase().includes(search.toLowerCase()));
-    }
+    // if (search.length > 0) {
+    //     products = products.filter(product => product.title.toLowerCase().includes(search.toLowerCase()));
+    // }
 
     if (products.length === 0) {
         return <NoProducts />;
