@@ -7,7 +7,7 @@ import React from "react";
 
 interface ProductFormProps {
     product?: Product;
-    onSubmit: (product: Omit<Product, 'id'>) => Promise<void>;
+    onSubmit: (product: Product) => Promise<void>;
     onClose: () => void;
     title: string;
     submitButtonText: string;
@@ -86,14 +86,14 @@ const ProductForm = React.forwardRef<HTMLDivElement, ProductFormProps>(
                 discountPercentage: parseFloat(formData.discountPercentage),
                 rating: parseFloat(formData.rating),
                 stock: parseInt(formData.stock),
-                images: formData.images.split(',').map((img) => img.trim())
+                images: formData.images.split(',').map((img) => img.trim()),
             };
 
             if (!validateForm(formToSubmit)) {
                 return;
             }
 
-            const submittedProduct: Omit<Product, 'id'> = formToSubmit;
+            const submittedProduct: Product = {...formToSubmit, id: product?.id || 0};
 
             await onSubmit(submittedProduct);
             onClose();
