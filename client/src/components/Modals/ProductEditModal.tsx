@@ -4,10 +4,9 @@ import editProduct from "../../services/editProduct";
 import { useAuth }  from '../../AuthContext';
 import { useState } from "react";
 import IssueForm from "../Product/ProductForm";
-import React from "react";
 
 const ProductEditModal = ({ product, refreshOnAction }: { product: Product, refreshOnAction: () => void }) => {
-    const { authToken } = useAuth();
+    const { isAuthenticated, makeAuthenticatedRequest } = useAuth();
 
     const [show, setShow] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -19,8 +18,8 @@ const ProductEditModal = ({ product, refreshOnAction }: { product: Product, refr
         if (product.id === undefined) return;
         setIsLoading(true);
         try {
-            if (authToken) {
-                await editProduct(product.id, updatedProduct, authToken);
+            if (isAuthenticated) {
+                await editProduct(product.id, updatedProduct, makeAuthenticatedRequest);
                 refreshOnAction();
             }
         } catch (error) {

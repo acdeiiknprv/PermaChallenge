@@ -22,6 +22,17 @@ export function useLoginModal() {
     return { showLoginModal, handleShowLoginModal, handleCloseLoginModal };
 }
 
+export function useLogoutModal() {
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
+    function handleShowLogoutModal() {
+        setShowLogoutModal(true);
+    }
+    function handleCloseLogoutModal() {
+        setShowLogoutModal(false);
+    }
+    return { showLogoutModal, handleShowLogoutModal, handleCloseLogoutModal };
+}
+
 export function useSearchModal() {
     const [showSearchModal, setShowSearchModal] = useState(false);
     function handleShowSearchModal() {

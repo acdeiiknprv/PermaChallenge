@@ -1,18 +1,19 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 interface AuthContextType {
-  authToken: string | null;
   login: (token: string) => void;
   logout: () => void;
+  isAuthenticated: boolean;
+  makeAuthenticatedRequest: (input: RequestInfo, init?: RequestInit) => Promise<Response>;
 }
 
 const defaultAuthContext: AuthContextType = {
-  authToken: null,
   login: (token: string) => {},
   logout: () => {},
+  isAuthenticated: false,
+  makeAuthenticatedRequest: async (input: RequestInfo, init?: RequestInit) => new Response(),
 };
 
-// Create context with the default value
 const AuthContext = createContext<AuthContextType>(defaultAuthContext);
 
 interface AuthProviderProps {
@@ -53,10 +54,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setAuthToken(null);
   };
 
+  const makeAuthenticatedRequest = async (input: RequestInfo, init?: RequestInit): Promise<Response> => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('No authentication token found');
+    }
+
+    const headers = new Headers(init?.headers);
+    headers.append('Authorization', `Bearer ${token}`);
+
+    const modifiedInit = init ? { ...init, headers } : { headers };
+
+    return fetch(input, modifiedInit);
+  };
+
   const contextValue = {
-    authToken,
     login,
     logout,
+    isAuthenticated: !!authToken,
+    makeAuthenticatedRequest,
   };
 
   return (
