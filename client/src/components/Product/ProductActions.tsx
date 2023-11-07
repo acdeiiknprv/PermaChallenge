@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import IssueEditModal from "./ProductEditModal";
+import IssueEditModal from "../Modals/ProductEditModal";
 import { Product } from "../../interfaces/product";
 import { useAuth }  from '../../AuthContext';
 
