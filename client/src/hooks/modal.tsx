@@ -21,3 +21,14 @@ export function useLoginModal() {
     }
     return { showLoginModal, handleShowLoginModal, handleCloseLoginModal };
 }
+
+export function useSearchModal() {
+    const [showSearchModal, setShowSearchModal] = useState(false);
+    function handleShowSearchModal() {
+        setShowSearchModal(true);
+    }
+    function handleCloseSearchModal() {
+        setShowSearchModal(false);
+    }
+    return { showSearchModal, handleShowSearchModal, handleCloseSearchModal };
+}

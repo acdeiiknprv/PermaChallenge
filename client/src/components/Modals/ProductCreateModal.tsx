@@ -1,5 +1,5 @@
 import { Modal } from "@mui/material";
-import IssueForm from "./ProductForm";
+import IssueForm from "../Product/ProductForm";
 import createProduct from "../../services/createProduct";
 import { Product } from "../../interfaces/product";
 import { useState } from "react";

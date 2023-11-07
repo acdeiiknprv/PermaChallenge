@@ -33,7 +33,7 @@ const SearchModal = ({ open, onClose, onSearch }: {open: boolean, onClose: () =>
           autoFocus
           margin="dense"
           id="search"
-          label="Search Term"
+          label="Search products"
           type="text"
           fullWidth
           variant="outlined"

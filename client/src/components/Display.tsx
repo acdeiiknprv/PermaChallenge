@@ -1,32 +1,39 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { useAuth } from '../AuthContext';
+
+import { Product } from '../interfaces/product';
+
+import NoProducts from '../utils/noproduct';
+import { LoginModal } from './Login/LoginModal';
+import SearchModal from './Modals/ProductSearchModal';
 import ProductsActions from './Product/ProductActions';
-import IssueCreateModal from './Product/ProductCreateModal';
+import IssueCreateModal from './Modals/ProductCreateModal';
 
 import { useProducts } from '../hooks/product';
-import { useCreateModal, useLoginModal } from '../hooks/modal';
-import { Product } from '../interfaces/product';
+import { useCreateModal, useLoginModal, useSearchModal } from '../hooks/modal';
+
+import { Box, Typography } from '@mui/material';
+import { CircularProgress } from '@mui/material';
+import { FixedButton } from './Buttons/FixedButton';
 
 import AddIcon from '@mui/icons-material/Add';
 import LoginIcon from '@mui/icons-material/Login';
 import SearchIcon from '@mui/icons-material/Search';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
 
-import Button from '@mui/material/Button';
-import { Box, Typography } from '@mui/material';
-import { CircularProgress } from '@mui/material';
-import { useAuth }  from '../AuthContext';
-import { LoginModal } from './Login/LoginModal';
-import SearchModal from './Product/ProductSearchModal';
-
-function FormatProduct() {
+function Products() {
     const { authToken } = useAuth();
-    const { showCreateModal, handleShowModal, handleCloseModal } = useCreateModal();
-    const { showLoginModal, handleShowLoginModal, handleCloseLoginModal} = useLoginModal();
-    const [showSearchModal, setShowSearchModal] = useState(false);
+
     const [filter, setFilterTerm] = useState<string>("");
     const [search, setSearchTerm] = useState<string>("");
     const [searchMode, setSearchMode] = useState<boolean>(false);
+
+    const { showCreateModal, handleShowModal, handleCloseModal } = useCreateModal();
+    const { showLoginModal, handleShowLoginModal, handleCloseLoginModal } = useLoginModal();
+    const { showSearchModal, handleShowSearchModal, handleCloseSearchModal } = useSearchModal();
+    
     const { products, handleRefresh, loading } = useProducts(search);
+    
 
     const handleSearch = (tempSearchTerm: string) => {
         setSearchTerm(tempSearchTerm);
@@ -46,21 +53,23 @@ function FormatProduct() {
                 value={filter}
                 onChange={(e) => setFilterTerm(e.target.value)}
             />
-            { authToken ? <AddButton icon={<AddIcon />} onClick={handleShowModal} bottom={'20px'} /> : <AddButton icon={<LoginIcon />} onClick={handleShowLoginModal} bottom={'20px'} /> }
-            { searchMode ? <AddButton icon={<SearchOffIcon />} onClick={handleSearchOff} bottom={'100px'} /> : <AddButton icon={<SearchIcon />} onClick={() => setShowSearchModal(true)} bottom={'100px'}/> }
-            {showSearchModal && (
-                <SearchModal
-                    open={showSearchModal}
-                    onClose={() => setShowSearchModal(false)}
-                    onSearch={handleSearch}
-                />
-            )}
             
+
             {loading ? <CircularProgress /> :
                 <ProductsList products={products} onAction={handleRefresh} search={filter} />
             }
-            {showCreateModal ? <IssueCreateModal open={showCreateModal} onClose={handleCloseModal} refreshOnAction={handleRefresh} /> : null}
-            { showLoginModal ? <LoginModal open={showLoginModal} onClose={handleCloseLoginModal} /> : null}
+
+            <> {/* Buttons */}
+                {authToken ? <FixedButton icon={<AddIcon />} onClick={handleShowModal} bottom={'20px'} right={'20px'} /> : <FixedButton icon={<LoginIcon />} onClick={handleShowLoginModal} bottom={'20px'} right={'20px'} />}
+                {searchMode ? <FixedButton icon={<SearchOffIcon />} onClick={handleSearchOff} bottom={'100px'} right={'20px'} /> : <FixedButton icon={<SearchIcon />} onClick={handleShowSearchModal} bottom={'100px'} right={'20px'} />}
+                {/* Logout Button */}
+            </>
+            
+            <> {/* Modals */}
+                {showCreateModal ? <IssueCreateModal open={showCreateModal} onClose={handleCloseModal} refreshOnAction={handleRefresh} /> : null}
+                {showLoginModal ? <LoginModal open={showLoginModal} onClose={handleCloseLoginModal} /> : null}
+                {showSearchModal ?<SearchModal open={showSearchModal} onClose={handleCloseSearchModal} onSearch={handleSearch} /> : null}
+            </>
         </div>
     );
 }
@@ -87,49 +96,23 @@ function ProductsList({ products, onAction, search }: { products: Product[], onA
     );
 }
 
-function AddButton({ icon, onClick, bottom }: { icon: React.ReactNode, onClick: () => void , bottom: string}) {
-    return (
-        <div style={{ position: 'fixed', bottom: bottom, right: '20px' }}>
-            <Button variant="contained" color="primary"
-                style={{
-                    width: '56px',
-                    height: '56px',
-                    borderRadius: '50%',
-                    minWidth: 'unset',
-                    padding: 0,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                }}
-                onClick={onClick}
-            >
-                {icon}
-            </Button>
-        </div>
-    );
-}
-
-function NoProducts() {
-    return <h3>No products</h3>;
-}
-
 function ProductDisplay({ product, onAction }: { product: Product, onAction: () => void }) {
     return (
-      <Box className='product-container' sx={{ marginBottom: 2, padding: 2, border: '1px solid lightgray', borderRadius: 2 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <Typography variant="h6" component="div">{product.title}</Typography>
+        <Box className='product-container' sx={{ marginBottom: 2, padding: 2, border: '1px solid lightgray', borderRadius: 2 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <Typography variant="h6" component="div">{product.title}</Typography>
+            </Box>
+            <Typography variant="subtitle1" component="div">{product.description}</Typography>
+            <Typography variant="subtitle1" component="div">Price: ${product.price.toFixed(2)}</Typography>
+            <Typography variant="subtitle1" component="div">Discount: {product.discountPercentage.toFixed(2)}%</Typography>
+            <Typography variant="subtitle1" component="div">Rating: {product.rating}</Typography>
+            <Typography variant="subtitle1" component="div">Stock: {product.stock}</Typography>
+            <Typography variant="subtitle1" component="div">Brand: {product.brand}</Typography>
+            <Typography variant="subtitle1" component="div">Category: {product.category}</Typography>
+
+            <ProductsActions product={product} onAction={onAction} />
         </Box>
-        <Typography variant="subtitle1" component="div">{product.description}</Typography>
-        <Typography variant="subtitle1" component="div">Price: ${product.price.toFixed(2)}</Typography>
-        <Typography variant="subtitle1" component="div">Discount: {product.discountPercentage.toFixed(2)}%</Typography>
-        <Typography variant="subtitle1" component="div">Rating: {product.rating}</Typography>
-        <Typography variant="subtitle1" component="div">Stock: {product.stock}</Typography>
-        <Typography variant="subtitle1" component="div">Brand: {product.brand}</Typography>
-        <Typography variant="subtitle1" component="div">Category: {product.category}</Typography>
-
-        <ProductsActions product={product} onAction={onAction} />
-      </Box>
     );
-  }
+}
 
-export default FormatProduct;
+export default Products;

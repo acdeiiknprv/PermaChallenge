@@ -3,7 +3,7 @@ import { Product } from "../../interfaces/product";
 import editProduct from "../../services/editProduct";
 import { useAuth }  from '../../AuthContext';
 import { useState } from "react";
-import IssueForm from "./ProductForm";
+import IssueForm from "../Product/ProductForm";
 import React from "react";
 
 const ProductEditModal = ({ product, refreshOnAction }: { product: Product, refreshOnAction: () => void }) => {
