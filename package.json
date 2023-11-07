@@ -6,7 +6,11 @@
     "install": "concurrently \"cd server && npm install\" \"cd client && npm install\""
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.200",
     "concurrently": "^8.2.2",
     "nodemon": "^3.0.1"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21"
   }
 }

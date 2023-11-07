@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { ChangeEvent, useCallback, useState } from "react";
 import { Product } from "../../interfaces/product";
 import { Button, TextField } from "@mui/material";
 import { validateField, validateForm } from "../../utils/validators";
+import { debounce } from 'lodash';
 import React from "react";
 
 interface IssueFormProps {
@@ -55,19 +56,27 @@ const IssueForm = React.forwardRef<HTMLDivElement, IssueFormProps>(
             category?: string;
         }>({});
 
-        const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const debouceValidateField = useCallback(
+            debounce((name: string, value: string) => {
+              const error =  validateField(name, value);
+              setErrors(prevErrors => ({
+                ...prevErrors,
+                [name]: error
+              }));
+            }, 300),
+            []
+          );
+        
+          const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
             const { name, value } = event.target;
-
-            const errorMessage = validateField(name, value);
-
-            setFormData(prevFormData => {
-                return { ...prevFormData, [name]: value };
-            });
-
-            setErrors(prevErrors => {
-                return { ...prevErrors, [name]: errorMessage };
-            });
-        };
+        
+            setFormData(prevFormData => ({
+              ...prevFormData,
+              [name]: value,
+            }));
+        
+            debouceValidateField(name, value);
+          };
 
         const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
             event.preventDefault();
